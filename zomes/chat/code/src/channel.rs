@@ -71,7 +71,6 @@ pub fn handle_create_channel(
         true => Entry::new(EntryType::App("public_channel".into()), channel),
         false => Entry::new(EntryType::App("direct_channel".into()), channel) };
 
-    // good candidate for bundle when that is working
     let channel = hdk::commit_entry(&entry).expect("Could not commit channel");
     hdk::link_entries(&AGENT_ADDRESS,&channel,"rooms")
     .map(|channel_addr|{
@@ -111,11 +110,11 @@ pub fn handle_get_messages(channel_address: String, min_count: u32) -> JsonStrin
     }
 }
 
-pub fn handle_post_message(channel_address: String, message: message::Message) -> JsonString {
-    let channel = from_channel(channel_address);
-    let channel_address = hdk::entry_address(&channel).expect("Could not get");
+pub fn handle_post_message(channel_name: String, message: message::Message) -> JsonString {
+    let channel = from_channel(channel_name);
+    let channel_addr = hdk::entry_address(&channel).expect("Could not get");
     hdk::commit_entry(&Entry::new(EntryType::App("message".into()), message))
-        .and_then(|message_addr| hdk::link_entries(&channel_address, &message_addr, "message_in")) 
+        .and_then(|message_addr| hdk::link_entries(&channel_addr, &message_addr, "message_in")) 
         .map(|_|json!({"success": true}).into())
         .unwrap_or_else(|hdk_err|hdk_err.into())
 }

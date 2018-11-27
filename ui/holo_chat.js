@@ -21,15 +21,7 @@ function getConfiguration()
      $("#title-username").text(JSON.parse(profile).firstName)
    });
  }
-/*
- function register() {
-   $.post("/fn/identity/registerDpkiKeyTo", "", function(arr){
-     if(arr=="true"){
-       $("#varified").text("Registered")
-     }else{$("#varified").text("Not Registered")}
-   });
- }
-*/
+
  function getRooms() {
   var configuration = getConfiguration();
   holoclient.connect(configuration.url).then(({call, close}) => 
@@ -94,6 +86,7 @@ function getConfiguration()
 function getMessages() {
 
   var configuration = getConfiguration();
+  active_room_name="Wolves";
   holoclient.connect(configuration.url).then(({call, close}) => 
   {
     call(configuration.instance, "chat", "main", "get_messages")({
@@ -130,7 +123,7 @@ function getMessages() {
   {
     call(configuration.instance, "chat", "main", "post_message")({
       message: {text,timestamp : new Date()},
-      channel_address: active_room_name
+      channel_name: active_room_name
     })
     .then(response =>{
       console.log("response : +" + response) 

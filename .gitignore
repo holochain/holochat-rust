@@ -9,6 +9,7 @@ ui-automation/cypress/videos
 ui-automation/node_modules
 ui-automation/mochawesome-report
 ui-src/storybook-addons/sketch/node_modules
+tmp-storage
 
 # testing
 /coverage
