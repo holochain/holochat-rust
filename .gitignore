@@ -14,6 +14,7 @@ tmp-storage
 # testing
 /coverage
 ui-src/coverage
+node_modules
 
 # production
 /build
