@@ -18,10 +18,7 @@ const testNewChannelParams = {
 
 const testMessage = {
   timestamp: "100000",
-  author: "glibglob",
-  message_type: "text",
-  payload: "{}",
-  meta: "{}",
+  text : "Some text"
 }
 
 test('Can create a public channel with no other members and retrieve it', (t) => {
@@ -57,9 +54,3 @@ test('Can post a message to the channel and retrieve', (t) => {
   t.end()
 })
 
-// test('Can create a public channel with some members', (t) => {
-//   const create_result = app.call('chat', 'main', 'create_channel', JSON.stringify({...testNewChannelParams, initial_members: [{id: "id123"}]}))
-//   console.log(create_result)
-//   t.deepEqual(JSON.parse(create_result), {success: true})
-//   t.end()
-// })
