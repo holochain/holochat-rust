@@ -30,6 +30,13 @@ function getConfiguration()
     }).then(response => {
       var rooms = JSON.parse(response)
       $("#rooms").empty()
+      rooms = rooms.sort(function(a,b){
+        if (a.name < b.name)
+          return -1;
+        if (a.name > b.name)
+          return 1;
+        return 0;
+      });
       for(i=0;i<rooms.length;i++){
         $("#rooms").append(
           "<li data-id=\""+rooms[i].id+"\""+
@@ -41,6 +48,7 @@ function getConfiguration()
       if(activeRoom) {
         setActiveRoom()
       }
+      close();
     });
   })
  
@@ -86,7 +94,6 @@ function getConfiguration()
 function getMessages() {
 
   var configuration = getConfiguration();
-  active_room_name="Wolves";
   holoclient.connect(configuration.url).then(({call, close}) => 
   {
     call(configuration.instance, "chat", "main", "get_messages")({
@@ -94,19 +101,21 @@ function getMessages() {
       min_count:10
     })
     .then(response =>{
-      $("#messages").empty()
+      
       var messages = JSON.parse(response);
-      messages = messages.sort(function(a,b){
-        timeA = new Date(a.timestamp)
-        timeB = new Date(b.timestamp)
-        return timeA > timeB
+      var sorted_messages = messages.sort(function(a,b){
+        return new Date(b.timestamp) - new Date(a.timestamp);
       });
-      for(var i=0;i<messages.length;i++) {
+      
+      $("#messages").empty()
+      for(var i=0;i<sorted_messages.length;i++) {
         $("#messages").append("<li class=\"list-unstyled\">"+
-           "<span class=\"timestamp\">"+messages[i].timestamp+"</span>"+
-           "<span class=\"message\">"+messages[i].text+"</span>"+
+           "<span class=\"timestamp\">"+sorted_messages[i].timestamp+"</span>"+
+           "<span class=\"message\">"+sorted_messages[i].text+"</span>"+
         "</li>")
       }
+
+      close();
   })
 })
   
