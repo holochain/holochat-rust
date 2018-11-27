@@ -7,7 +7,6 @@ ui-src/node_modules
 ui-automation/cypress/screenshots
 ui-automation/cypress/videos
 ui-automation/node_modules
-ui
 ui-automation/mochawesome-report
 ui-src/storybook-addons/sketch/node_modules
 
