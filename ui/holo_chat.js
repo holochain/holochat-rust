@@ -2,6 +2,7 @@
 
 var activeRoom;
 var active_room_name;
+var call_to_api;
 
 function getConfiguration()
 {
@@ -16,17 +17,9 @@ function getConfiguration()
 }
 
 
- function getMyProfile() {
-   $.get("/fn/profiles/getProfile", "", function(profile){
-     $("#title-username").text(JSON.parse(profile).firstName)
-   });
- }
-
  function getRooms() {
   var configuration = getConfiguration();
-  holoclient.connect(configuration.url).then(({call, close}) => 
-  {
-    call(configuration.instance, "chat", "main", "get_my_channels")({
+  call_to_api(configuration.instance, "chat", "main", "get_my_channels")({
     }).then(response => {
       var rooms = JSON.parse(response)
       $("#rooms").empty()
@@ -45,13 +38,10 @@ function getConfiguration()
           "</li>"
         )
       }
-      if(activeRoom) {
+     
         setActiveRoom()
-      }
-      close();
-    });
-  })
- 
+      
+    }); 
  }
 
  function addRoom() {
@@ -62,9 +52,8 @@ function getConfiguration()
    }
 
    $("#room-name-input").val('')
-  holoclient.connect(configuration.url).then(({call, close}) => 
-  {
-    call(configuration.instance, "chat", "main", "create_channel")({
+  
+   call_to_api(configuration.instance, "chat", "main", "create_channel")({
       name: room.name,
       description: "user generated room",
       initial_members: [],
@@ -72,31 +61,29 @@ function getConfiguration()
     }).then(response => {
       console.log("Response is :" + response)
     })
-    close()
- })
+
 }
 
  function selectRoom(event) {
    $("#rooms li").removeClass("selected-room")
    activeRoom = $(this).data('id')
    active_room_name = $(this).data('name')
+   setActiveRoom();
 
-   setActiveRoom()
  }
 
  function setActiveRoom() {
    var roomElement = $("#rooms li[data-id="+activeRoom+"]")
    $(roomElement).addClass("selected-room")
-   $("#messages-header").text("Messages in #"+$(roomElement).data("name"))
+   $("#messages-header").text("Messages in #"+active_room_name)
    getMessages()
+
  }
 
 function getMessages() {
 
   var configuration = getConfiguration();
-  holoclient.connect(configuration.url).then(({call, close}) => 
-  {
-    call(configuration.instance, "chat", "main", "get_messages")({
+  call_to_api(configuration.instance, "chat", "main", "get_messages")({
       channel_address:active_room_name,
       min_count:10
     })
@@ -109,66 +96,38 @@ function getMessages() {
       
       $("#messages").empty()
       for(var i=0;i<sorted_messages.length;i++) {
+        console.log("what is the text:" +sorted_messages[i].text );
         $("#messages").append("<li class=\"list-unstyled\">"+
            "<span class=\"timestamp\">"+sorted_messages[i].timestamp+"</span>"+
            "<span class=\"message\">"+sorted_messages[i].text+"</span>"+
         "</li>")
       }
-
-      close();
   })
-})
-  
-
-
 }
 
  function sendMessage() {
    var text = $("#message-input").val()
    var configuration = getConfiguration();
- 
-
-   holoclient.connect(configuration.url).then(({call, close}) => 
-  {
-    call(configuration.instance, "chat", "main", "post_message")({
+   call_to_api(configuration.instance, "chat", "main", "post_message")({
       message: {text,timestamp : new Date()},
       channel_name: active_room_name
     })
     .then(response =>{
       console.log("response : +" + response) 
       })
-    })
 }
 
 
-
-/*
-//TODO this METHORD will retrive the post it has to be displayed
- function getTag (tag) {
-    $.post("/fn/messages/getPostsByTag",tag,function(arr) {
-     arr=JSON.parse(arr);
-     console.log("posts: " + JSON.stringify(arr));
-//TODO Display the posts
-
-        }
-    );
-}
-function openTag(){$('#tagDialog').modal('show');}
-
-function passTag() {
-    var hashtag = $("#tagHandle").val();
-    getTag(hashtag);
-    $('#tagDialog').modal('hide');
-  }
-*/
  $(window).ready(function() {
    var configuration = getConfiguration();
-    $("#room-name-button").click(addRoom)
-    $("#rooms").on("click", "li", selectRoom)
-    $("#message-button").click(sendMessage)
-    //$('#tagButton').click(openTag);
-    //$('#submitTag').click(passTag);
+   holoclient.connect(configuration.url).then(({call, close}) => 
+   { 
+        call_to_api = call;
+   })
 
+  $("#room-name-button").click(addRoom);
+    $("#rooms").on("click", "li", selectRoom)
+    $("#message-button").click(sendMessage);
     $("#room-name-input").keyup(function(event){
         if(event.keyCode == 13) $("#room-name-button").click()
     })
@@ -176,11 +135,11 @@ function passTag() {
     $("#message-input").keyup(function(event){
         if(event.keyCode == 13) $("#message-button").click()
     })
-    setInterval(poll, 5000)
+
+    setInterval(function(){
+      getMessages();
+      getRooms();
+    },3000)
  });
 
- function poll()
- {
-   getMessages();
-   getRooms();
- }
+
