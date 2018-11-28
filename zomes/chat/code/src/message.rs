@@ -29,6 +29,17 @@ pub fn message_definition() -> ValidatingEntryType {
             Ok(())
         },
 
-        links: []
+        links: [
+            from!(
+                "channel",
+                tag: "message_in",
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::ChainFull
+                },
+                validation: |_source: Address, _target: Address, _ctx: hdk::ValidationData| {
+                    Ok(())
+                }
+            )
+        ]
     )
 }

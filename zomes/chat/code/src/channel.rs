@@ -41,7 +41,8 @@ pub fn public_channel_definition() -> ValidatingEntryType {
         },
 
         links: [
-            agent_channel_link()
+            agent_channel_link(),
+            channel_message_link()
         ]
     )
 }
@@ -62,7 +63,8 @@ pub fn direct_channel_definition() -> ValidatingEntryType {
         },
 
         links: [
-            agent_channel_link()
+            agent_channel_link(),
+            channel_message_link()
         ]
     )
 }
