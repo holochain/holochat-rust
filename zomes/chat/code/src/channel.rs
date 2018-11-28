@@ -85,7 +85,7 @@ fn agent_channel_link() -> ValidatingLinkDefinition {
 fn channel_message_link() -> ValidatingLinkDefinition {
     to!(
         "message",
-        tag: "rooms",
+        tag: "message_in",
         validation_package: || {
             hdk::ValidationPackageDefinition::ChainFull
         },
