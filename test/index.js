@@ -12,7 +12,6 @@ app.start()
 const testNewChannelParams = {
   name: "test new channel",
   description: "for testing...",
-  initial_members: [],
   public: true
 }
 

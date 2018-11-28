@@ -3,7 +3,6 @@ use hdk::{
     holochain_core_types::hash::HashString,
     holochain_core_types::entry::Entry,
     error::ZomeApiResult,
-    error::ZomeApiError,
 };
 
 // #[derive(Serialize, Deserialize, Debug)]
@@ -39,8 +38,3 @@ pub fn get_links_and_load<S: Into<String>>(
 
 }
 
-pub fn link_entries_bidir<S: Into<String>>(a: &HashString, b: &HashString, tag_a_b: &str, tag_b_a: S) -> Result<(), ZomeApiError> {
-    hdk::link_entries(a, b, tag_a_b)?;
-    hdk::link_entries(b, a, tag_b_a)?;
-    Ok(())
-}

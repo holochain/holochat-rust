@@ -56,7 +56,6 @@ function getConfiguration()
    call_to_api(configuration.instance, "chat", "main", "create_channel")({
       name: room.name,
       description: "user generated room",
-      initial_members: [],
       public: room.public =="public"?true:false
     }).then(response => {
       console.log("Response is :" + response)
@@ -84,8 +83,7 @@ function getMessages() {
 
   var configuration = getConfiguration();
   call_to_api(configuration.instance, "chat", "main", "get_messages")({
-      channel_name: active_room_name || "",
-      min_count:10
+      channel_name: active_room_name || ""
     })
     .then(response =>{
       var messages = JSON.parse(response);

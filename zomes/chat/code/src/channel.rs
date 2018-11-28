@@ -9,13 +9,11 @@ use hdk::{
     holochain_core_types::dna::zome::entry_types::Sharing,
     holochain_core_types::entry::{entry_type::EntryType, Entry},
     holochain_core_types::error::HolochainError,
-    holochain_core_types::hash::HashString,
     holochain_core_types::json::JsonString,
     AGENT_ADDRESS,
 };
 use std::convert::TryFrom;
 
-use super::member;
 use super::message;
 use super::utils;
 
@@ -100,7 +98,6 @@ fn channel_message_link() -> ValidatingLinkDefinition {
 pub fn handle_create_channel(
     name: String,
     description: String,
-    initial_members: Vec<member::Member>,
     public: bool,
 ) -> JsonString {
     let channel = Channel {
@@ -130,25 +127,10 @@ pub fn handle_get_my_channels() -> JsonString {
     }
 }
 
-pub fn handle_get_members(channel_address: HashString) -> JsonString {
-    match get_members(&channel_address) {
-        Ok(result) => result.into(),
-        Err(hdk_err) => hdk_err.into(),
-    }
-}
 
-pub fn handle_add_members(channel_address: HashString, members: Vec<member::Member>) -> JsonString {
-    members
-        .iter()
-        .map(|member| {
-            utils::link_entries_bidir(&member.hash(), &channel_address, "member_of", "has_member")
-        })
-        .collect::<Result<Vec<_>, _>>()
-        .map(|_| json!({"success": true}).into())
-        .unwrap_or_else(|hdk_err| hdk_err.into())
-}
 
-pub fn handle_get_messages(channel_name: String, min_count: u32) -> JsonString {
+
+pub fn handle_get_messages(channel_name: String) -> JsonString {
     match get_messages(channel_name) {
         Ok(result) => result.into(),
         Err(hdk_err) => hdk_err.into(),
@@ -196,16 +178,6 @@ fn get_my_channels() -> ZomeApiResult<Vec<Channel>> {
     })
 }
 
-fn get_members(channel_address: &HashString) -> ZomeApiResult<Vec<member::Member>> {
-    utils::get_links_and_load(channel_address, "has_member").map(|results| {
-        results
-            .iter()
-            .map(|get_links_result| {
-                member::Member::try_from(get_links_result.entry.value().clone()).unwrap()
-            })
-            .collect()
-    })
-}
 
 fn get_messages(channel_name: String) -> ZomeApiResult<Vec<message::Message>> {
     match from_channel(channel_name.clone()) {
