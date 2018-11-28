@@ -111,29 +111,43 @@ pub fn handle_get_messages(channel_address: String, min_count: u32) -> JsonStrin
 }
 
 pub fn handle_post_message(channel_name: String, message: message::Message) -> JsonString {
-    let channel = from_channel(channel_name);
-    let channel_addr = hdk::entry_address(&channel).expect("Could not get");
-    hdk::commit_entry(&Entry::new(EntryType::App("message".into()), message))
-        .and_then(|message_addr| hdk::link_entries(&channel_addr, &message_addr, "message_in")) 
-        .map(|_|json!({"success": true}).into())
-        .unwrap_or_else(|hdk_err|hdk_err.into())
+    from_channel(channel_name)
+                       .map(|s|hdk::entry_address(&s))
+                       .map(|channel_addr|{
+        channel_addr.and_then(|addr|{
+        hdk::commit_entry(&Entry::new(EntryType::App("message".into()), message))
+        .and_then(|message_addr| hdk::link_entries(&addr, &message_addr, "message_in")) 
+        .map(|_|json!({"success": true}))
+       
+        })
+    }).map(|s|{
+        s.map_err(|err|json!({"success": false}))
+    })
+    .unwrap_or_else(||Err(json!({"success": false})))
+    .into()
+
+    
 }
 
-fn from_channel(channel_name:String) ->Entry
+fn from_channel(channel_name:String) ->Option<Entry>
 {
-     let channels = get_my_channels()
-                    .unwrap();
-
-     let channel  = channels.iter()
-                    .filter(|f|f.name==channel_name)
-                    .next()
-                    .unwrap();
-      match channel.public 
-      {
-        true => Entry::new(EntryType::App("public_channel".into()), channel),
-        false => Entry::new(EntryType::App("direct_channel".into()), channel) 
-      }
-    
+    get_my_channels()
+    .ok()
+    .and_then(|channels|{
+        channels
+        .iter()
+        .filter(|f|f.name==channel_name)
+        .map(|channel|
+        {
+            match channel.public 
+            {
+                true => Entry::new(EntryType::App("public_channel".into()), channel),
+                false => Entry::new(EntryType::App("direct_channel".into()), channel) 
+            }
+        })
+        .next()
+        
+    })
     
 
 }
@@ -157,7 +171,7 @@ fn get_members(channel_address: &HashString) -> ZomeApiResult<Vec<member::Member
 }
 
 fn get_messages(channel_name: String) -> ZomeApiResult<Vec<message::Message>> {
-    let channel = from_channel(channel_name);
+    let channel = from_channel(channel_name).unwrap();
     let channel_address = hdk::entry_address(&channel).unwrap();
     utils::get_links_and_load(&channel_address, "message_in").map(|results| {
         results.iter().map(|get_links_result| {
