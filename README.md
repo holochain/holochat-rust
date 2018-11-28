@@ -26,14 +26,11 @@ git clone https://github.com/holochain/holochat-rust
 
 ```shell
 cd holochat-rust
-hc test
-
+hc test | test/node_modules/faucet/bin/cmd.js
 ```
-You should see something like:
 
-```shell
-<copy output here>
-```
+Note that by using the " | test/node_modules/faucet/bin/cmd.js" you lose the `console.log` output of your tests, but gain nice color coding.
+If you want to see the logs, just use `hc test`.
 
 4. Try running the Websocket server, by running
 
