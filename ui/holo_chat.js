@@ -9,7 +9,7 @@ function getConfiguration()
   var configuration ={
     url :'ws://localhost:3400/',
     agent:'chat',
-    instance : "chat",
+    instance : "test-instance",
     dna :"Qm328wyq38924y"
   }
 
