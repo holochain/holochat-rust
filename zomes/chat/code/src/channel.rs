@@ -74,7 +74,7 @@ pub fn handle_create_channel(
     let channel = hdk::commit_entry(&entry).expect("Could not commit channel");
     hdk::link_entries(&AGENT_ADDRESS,&channel,"rooms")
     .map(|channel_addr|{
-            json!({"address": channel_addr}).into()
+            json!({"address": channel}).into()
         })
         .unwrap_or_else(|hdk_err|{hdk_err.into()})
 }
