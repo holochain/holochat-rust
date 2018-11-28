@@ -14,7 +14,7 @@
 
 1. Install the Holochain command line dev tool
 ```shell
-cargo install hc --force --git https://github.com/holochain/holochain-rust.git --branch hc-run
+cargo install hc --force --git https://github.com/holochain/holochain-rust.git --branch develop
 ```
 
 2. Clone this repo:
