@@ -3,6 +3,7 @@
 # dependencies
 dna-src/node_modules
 dist
+bundle.json
 
 ui-src/node_modules
 ui-automation/cypress/screenshots
