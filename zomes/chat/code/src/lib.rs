@@ -63,7 +63,7 @@ define_zome! {
 				handler: channel::handle_post_message
 			}
 			get_messages: {
-				inputs: |channel_address: String, min_count: u32|,
+				inputs: |channel_name: String, min_count: u32|,
 				outputs: |result: JsonString|,
 				handler: channel::handle_get_messages
 			}

@@ -43,14 +43,13 @@ test('Can post a message to the channel and retrieve', (t) => {
   console.log(get_result)
   t.deepEqual(get_result.length, 1)
 
-  const post_result = app.call('chat', 'main', 'post_message', {channel_address: channel_addr, message: testMessage})
+  const post_result = app.call('chat', 'main', 'post_message', {channel_name: testNewChannelParams.name, message: testMessage})
   console.log(post_result)
-  t.deepEqual(post_result, {success: true})
+  t.deepEqual(post_result, {Ok: { success: true}})
 
-  const get_message_result = app.call('chat', 'main', 'get_messages', {channel_address: channel_addr, min_count: 10})
+  const get_message_result = app.call('chat', 'main', 'get_messages', {channel_name: testNewChannelParams.name, min_count: 10})
   console.log(get_message_result)
-  const messages = get_message_result
-  t.deepEqual(messages[0]. testMessage)
+  t.deepEqual(get_message_result[0], testMessage)
   t.end()
 })
 

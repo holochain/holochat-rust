@@ -84,12 +84,14 @@ function getMessages() {
 
   var configuration = getConfiguration();
   call_to_api(configuration.instance, "chat", "main", "get_messages")({
-      channel_address:active_room_name,
+      channel_name: active_room_name || "",
       min_count:10
     })
     .then(response =>{
-      
       var messages = JSON.parse(response);
+
+      if (messages.error) return;
+
       var sorted_messages = messages.sort(function(a,b){
         return new Date(b.timestamp) - new Date(a.timestamp);
       });
@@ -110,11 +112,11 @@ function getMessages() {
    var configuration = getConfiguration();
    call_to_api(configuration.instance, "chat", "main", "post_message")({
       message: {text,timestamp : new Date()},
-      channel_name: active_room_name
+      channel_name: active_room_name || ""
     })
     .then(response =>{
       console.log("response : +" + response) 
-      })
+    })
 }
 
 

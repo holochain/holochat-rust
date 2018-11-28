@@ -1,3 +1,4 @@
+use hdk::holochain_core_types::cas::content::Address;
 use hdk::holochain_core_types::error::HolochainError;
 use hdk::holochain_core_types::json::JsonString;
 use hdk::{
@@ -26,6 +27,8 @@ pub fn message_definition() -> ValidatingEntryType {
 
         validation: |_message: Message, _ctx: hdk::ValidationData| {
             Ok(())
-        }
+        },
+
+        links: []
     )
 }
