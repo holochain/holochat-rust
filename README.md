@@ -32,20 +32,13 @@ hc test | test/node_modules/faucet/bin/cmd.js
 Note that by using the " | test/node_modules/faucet/bin/cmd.js" you lose the `console.log` output of your tests, but gain nice color coding.
 If you want to see the logs, just use `hc test`.
 
-4. Try running the Websocket server, by running
+4. Compile the DNA and run it using `hc` with:
 
 ```shell
 hc run --port 3400 --package
 ```
 
-5. Run some webserver for your UI files...
-
-```shell
-cd ui
-python -m SimpleHTTPServer
-```
-
-and open up `localhost:8000` or whatever port your webserver is running at in your browser. 
+Finally to run the holochat UI, simply open the `ui/index.html` file in a browser, and it should start communicating with the `hc` via websockets.
 
 ## Contribute
 Holochain is an open source project.  We welcome all sorts of participation and are actively working on increasing surface area to accept it.  Please see our [contributing guidelines](https://github.com/holochain/org/blob/master/CONTRIBUTING.md) for our general practices and protocols on participating in the community.
