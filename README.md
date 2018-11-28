@@ -41,8 +41,11 @@ hc run --port 3400 --package
 5. Run some webserver for your UI files...
 
 ```shell
+cd ui
 python -m SimpleHTTPServer
 ```
+
+and open up `localhost:8000` or whatever port your webserver is running at in your browser. 
 
 ## Contribute
 Holochain is an open source project.  We welcome all sorts of participation and are actively working on increasing surface area to accept it.  Please see our [contributing guidelines](https://github.com/holochain/org/blob/master/CONTRIBUTING.md) for our general practices and protocols on participating in the community.
