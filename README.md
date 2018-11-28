@@ -14,22 +14,34 @@
 
 1. Install the Holochain [command-line dev tool](https://github.com/holochain/holochain-rust/blob/develop/cmd/README.md) as detailed in the readme.
 
-1. Clone this repo:
-``` shell
+2. Clone this repo:
+```shell
 git clone https://github.com/holochain/holochat-rust
 ```
 
-1. Make sure things are working by running the tests:
+3. Make sure things are working by running the tests:
 
-``` shell
+```shell
 cd holochat-rust
 hc test
 
 ```
 You should see something like:
 
-``` shell
+```shell
 <copy output here>
+```
+
+4. Try running the Websocket server, by running
+
+```shell
+hc run --port 3400 --package
+```
+
+5. Run some webserver for your UI files...
+
+```shell
+python -m SimpleHTTPServer
 ```
 
 ## Contribute
