@@ -12,14 +12,11 @@
 
 ## Install
 
-1. Install the Holochain command line dev tool
-```shell
-cargo install hc --force --git https://github.com/holochain/holochain-rust.git --branch develop
-```
+1. Install the Holochain command line dev tool by following the instructions here: https://developer.holochain.org/start.html
 
 2. Clone this repo:
 ```shell
-git clone https://github.com/holochain/holochat-rust
+    git clone https://github.com/holochain/holochat-rust
 ```
 
 3. Make sure things are working by running the tests:
