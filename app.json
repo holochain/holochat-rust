@@ -1,0 +1,14 @@
+{
+  "name": "Holochat",
+  "description": "A Holochain chat app",
+  "authors": [
+    {
+      "indentifier": "Ashanti <Ashanti.Mutinta@holo.host>",
+      "public_key_source": "",
+      "signature": ""
+    }
+  ],
+  "version": "0.1.0",
+  "dht": {},
+  "properties": null
+}

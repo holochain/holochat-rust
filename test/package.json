@@ -1,8 +1,10 @@
 {
   "dependencies": {
-    "@holochain/holochain-nodejs": "^0.1.22",
+    "@holochain/holochain-nodejs": "^0.2.0",
     "faucet": "0.0.1",
     "json3": "*",
+    "npm-cli": "^0.1.0",
+    "rebuild": "^0.1.2",
     "tape": "^4.9.1"
   }
 }
