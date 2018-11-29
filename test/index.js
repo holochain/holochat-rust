@@ -53,18 +53,6 @@ test('Can post a message to the channel and retrieve', (t) => {
   t.end()
 })
 
-test('scenario test create & publish post -> get from other instance', (t) => {
-  t.plan(3)
 
-  const create_result = app.call("chat", "main", "create_channel", testNewChannelParams)
-
-  t.equal(create_result.address.length, 46)
-  t.equal(create_result.address, "QmNndXfXcxqwsnAXdvbnzdZUS7bm4WqimY7w873C3Uttx1")
-  var message_params = { channel_name: testNewChannelParams.name || ""}
-  const get_channels = JSON.parse(app2.call("chat", "main", "getMessages", testNewChannelParams));
-  t.equal(get_channels.length,1);
-  t.equal(get_channels[0].name, message_params.channel_name)
-  
-})
 
 
