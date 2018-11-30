@@ -57,7 +57,6 @@ test('Can post a message to the channel and retrieve', (t) => {
 
 
 test('scenario test create & publish post -> get from other instance', (t) => {
-  t.plan(3)
 
   const create_result = app.call("chat", "main", "create_channel", testNewChannelParams)
 
