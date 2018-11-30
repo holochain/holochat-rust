@@ -23,6 +23,7 @@
 
 ```shell
 cd holochat-rust
+cd test && npm install && cd ..
 hc test | test/node_modules/faucet/bin/cmd.js
 ```
 
