@@ -13,7 +13,8 @@ app2.start()
 
 const testNewChannelParams = {
   name: "test new channel",
-  access: true
+  description : "testing params",
+  public: true
 }
 
 const testMessage = {
