@@ -22,7 +22,9 @@
 3. Make sure things are working by running the tests:
 
 ```shell
-cd holochat-rust
+cd holochat-rust/test
+npm install
+cd ..
 hc test | test/node_modules/faucet/bin/cmd.js
 ```
 
