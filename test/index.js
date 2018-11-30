@@ -9,6 +9,7 @@ const app2 = Container.loadAndInstantiate("dist/bundle.json")
 
 // activate the new instance
 app.start()
+app2.start()
 
 const testNewChannelParams = {
   name: "test new channel",
@@ -52,34 +53,35 @@ test('Can post a message to the channel and retrieve', (t) => {
   t.end()
 })
 
+
+
 test('scenario test create & publish post -> get from other instance', (t) => {
   t.plan(3)
 
   const create_result = app.call("chat", "main", "create_channel", testNewChannelParams)
 
   t.equal(create_result.address.length, 46)
-  t.equal(create_result.address, "QmSZFNPn4zgtgS18J2XZcXmvw7Rv1W1Nmf8QH3aVeJjUMY")
+  t.equal(create_result.address, "QmVVTRfapMFA7pgfxtYGVF8Xj3hc7sG5TiRVRJZdKiMcUh")
 
   const check_get_result = function check_get_result (i = 0, get_result) {
     t.comment('checking get result for the ' + i + 'th time')
     t.comment(get_result + "")
 
     if (get_result) {
-      t.equal(get_result[0].name, testNewChannelParams.name)
+      t.deepEqual(get_result, testNewChannelParams)
     }
-    else if (i < 50) {
+    else if (i < 50 &&get_result!='') {
       setTimeout(function() {
         check_get_result(
           ++i,
           app2.call("chat", "main", "get_my_channels", {})
         )
-      }, 100)
+      }, 500)
     }
     else {
       t.end()
     }
 
-  }()
-})
+  }})
 
 
