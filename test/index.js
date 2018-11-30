@@ -61,7 +61,7 @@ test('scenario test create & publish post -> get from other instance', (t) => {
   const create_result = app.call("chat", "main", "create_channel", testNewChannelParams)
 
   t.equal(create_result.address.length, 46)
-  t.equal(create_result.address, "QmcXt9K4hYMnFELavRq6UoRb9ibbfTzjTR6q35kiqmxxWH'")
+  t.equal(create_result.address, "QmcXt9K4hYMnFELavRq6UoRb9ibbfTzjTR6q35kiqmxxWH")
 
   const check_get_result = function check_get_result (i = 0, get_result) {
     t.comment('checking get result for the ' + i + 'th time')
