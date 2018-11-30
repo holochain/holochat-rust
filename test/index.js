@@ -83,6 +83,6 @@ test('scenario test create & publish post -> get from other instance', (t) => {
       t.end()
     }
 
-  }})
+  }() })
 
 
