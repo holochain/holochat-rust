@@ -4,8 +4,8 @@ const test = require('tape');
 const Container = require('@holochain/holochain-nodejs');
 
 // instantiate an app from the DNA JSON bundle
-const app = Container.loadAndInstantiate("dist/bundle.json")
-const app2 = Container.loadAndInstantiate("dist/bundle.json")
+const app = Container.instanceFromNameAndDna("app", "dist/bundle.json")
+const app2 = Container.instanceFromNameAndDna("app2", "dist/bundle.json")
 
 // activate the new instance
 app.start()
