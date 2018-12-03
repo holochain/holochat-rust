@@ -7,8 +7,9 @@ use hdk::{
     error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::cas::content::Address,
     holochain_core_types::dna::zome::entry_types::Sharing,
-    holochain_core_types::entry::{entry_type::EntryType, Entry},
+    holochain_core_types::entry::{Entry,entry_type::AppEntryType,AppEntryValue},
     holochain_core_types::error::HolochainError,
+    holochain_core_types::hash::HashString,
     holochain_core_types::json::JsonString,
     AGENT_ADDRESS,
 };
@@ -107,12 +108,13 @@ pub fn handle_create_channel(
     };
 
     let entry = match public {
-        true => Entry::new(EntryType::App("public_channel".into()), channel),
-        false => Entry::new(EntryType::App("direct_channel".into()), channel),
+        true => Entry::App(AppEntryType::from("public_channel"), channel.into()),
+        false => Entry::App(AppEntryType::from("direct_channel"), channel.into()),
     };
 
+    let hash_address = &HashString::from(AGENT_ADDRESS.to_string());
     match hdk::commit_entry(&entry) {
-        Ok(address) => match hdk::link_entries(&AGENT_ADDRESS, &address, "rooms") {
+        Ok(address) => match hdk::link_entries(hash_address, &address, "rooms") {
             Ok(_) => json!({ "address": address }).into(),
             Err(hdk_err) => hdk_err.into(),
         },
@@ -142,7 +144,7 @@ pub fn handle_post_message(channel_name: String, message: message::Message) -> J
         .map(|s| hdk::entry_address(&s))
         .map(|channel_addr| {
             channel_addr.and_then(|addr| {
-                hdk::commit_entry(&Entry::new(EntryType::App("message".into()), message))
+                hdk::commit_entry(&Entry::App(AppEntryType::from("message"), message.into()))
                     .and_then(|message_addr| hdk::link_entries(&addr, &message_addr, "message_in"))
                     .map(|_| json!({"success": true}))
             })
@@ -158,8 +160,8 @@ fn from_channel(channel_name: String) -> Option<Entry> {
             .iter()
             .filter(|f| f.name == channel_name)
             .map(|channel| match channel.public {
-                true => Entry::new(EntryType::App("public_channel".into()), channel),
-                false => Entry::new(EntryType::App("direct_channel".into()), channel),
+                true => Entry::App(AppEntryType::from("public_channel"), channel.into()),
+                false => Entry::App(AppEntryType::from("direct_channel"), channel.into()),
             })
             .next()
     })
@@ -168,11 +170,12 @@ fn from_channel(channel_name: String) -> Option<Entry> {
 // end public zome functions
 
 fn get_my_channels() -> ZomeApiResult<Vec<Channel>> {
-    utils::get_links_and_load(&AGENT_ADDRESS, "rooms").map(|results| {
+    utils::get_links_and_load(&AGENT_ADDRESS, "rooms").map(|mut results| {
         results
             .iter()
-            .map(|get_links_result| {
-                Channel::try_from(get_links_result.entry.value().clone()).unwrap()
+            .map(|mut get_links_result| {
+                let json : JsonString = get_links_result.entry.clone().into();
+                Channel::try_from(json).unwrap()
             })
             .collect()
     })
@@ -182,11 +185,12 @@ fn get_my_channels() -> ZomeApiResult<Vec<Channel>> {
 fn get_messages(channel_name: String) -> ZomeApiResult<Vec<message::Message>> {
     match from_channel(channel_name.clone()) {
         Some(entry) => match hdk::entry_address(&entry) {
-            Ok(address) => utils::get_links_and_load(&address, "message_in").map(|results| {
+            Ok(address) => utils::get_links_and_load(&address, "message_in").map(|mut results| {
                 results
-                    .iter()
+                    .iter_mut()
                     .map(|get_links_result| {
-                        message::Message::try_from(get_links_result.entry.value().clone()).unwrap()
+                        let json : JsonString = get_links_result.entry.clone().into();
+                        message::Message::try_from(json).unwrap()
                     })
                     .collect()
             }),
