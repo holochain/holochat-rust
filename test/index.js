@@ -67,7 +67,7 @@ test('scenario test create & publish post -> get from other instance', (t) => {
     t.comment('checking get result for the ' + i + 'th time')
     t.comment(get_result + "")
 
-    if (get_result===undefined||get_result=='' || i==50?false:true) {
+    if (get_result) {
       t.deepEqual(get_result, testNewChannelParams)
     }
     else if (i < 50) {
