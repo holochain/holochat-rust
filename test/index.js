@@ -4,15 +4,16 @@ const test = require('tape');
 const Container = require('@holochain/holochain-nodejs');
 
 // instantiate an app from the DNA JSON bundle
-const app = Container.loadAndInstantiate("dist/bundle.json")
-const app2 = Container.loadAndInstantiate("dist/bundle.json")
+const app = Container.instanceFromNameAndDna("app", "dist/bundle.json")
+const app2 = Container.instanceFromNameAndDna("app2", "dist/bundle.json")
 
 // activate the new instance
 app.start()
+app2.start()
 
 const testNewChannelParams = {
   name: "test new channel",
-  description: "for testing...",
+  description : "testing params",
   public: true
 }
 
@@ -54,5 +55,34 @@ test('Can post a message to the channel and retrieve', (t) => {
 })
 
 
+
+test('scenario test create & publish post -> get from other instance', (t) => {
+
+  const create_result = app.call("chat", "main", "create_channel", testNewChannelParams)
+
+  t.equal(create_result.address.length, 46)
+  t.equal(create_result.address, "QmcXt9K4hYMnFELavRq6UoRb9ibbfTzjTR6q35kiqmxxWH")
+
+  const check_get_result = function check_get_result (i = 0, get_result) {
+    t.comment('checking get result for the ' + i + 'th time')
+    t.comment(get_result + "")
+
+    if (get_result) {
+      t.deepEqual(get_result, testNewChannelParams);
+      t.end()
+    }
+    else if (i < 50) {
+      setTimeout(function() {
+        check_get_result(
+          ++i,
+          app2.call("chat", "main", "get_my_channel", {channel_address:create_result.address})
+        )
+      }, 500)
+    }
+    else {
+      t.end()
+    }
+
+  }() })
 
 
