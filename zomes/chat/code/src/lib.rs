@@ -10,6 +10,7 @@ extern crate serde_json;
 extern crate holochain_core_types_derive;
 extern crate machine_ip;
 
+use hdk::holochain_core_types::hash::HashString;
 mod message;
 mod channel;
 mod utils;
@@ -41,9 +42,9 @@ define_zome! {
 				outputs: |result: JsonString|,
 				handler: channel::handle_get_my_channels
 			}
-			get_my_channels{
-				input : |hash_address:HashString|,
-				output :|result:JsonString|,
+			get_my_channel: {
+				inputs: |channel_address:HashString|,
+				outputs :|result:JsonString|,
 				handler : channel::handle_get_my_channel
 			}
             post_message: {

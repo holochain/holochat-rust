@@ -10,6 +10,7 @@ use hdk::{
     holochain_core_types::entry::{entry_type::EntryType, Entry},
     holochain_core_types::error::HolochainError,
     holochain_core_types::json::JsonString,
+    holochain_core_types::hash::HashString,
     AGENT_ADDRESS,
 };
 use std::convert::TryFrom;
@@ -127,9 +128,9 @@ pub fn handle_get_my_channels() -> JsonString {
     }
 }
 
-pub fn handle_get_my_channel(address : HashString) -> JsonString
+pub fn handle_get_my_channel(channel_address : HashString) -> JsonString
 {
-    match hdk::get_entry(address)
+    match hdk::get_entry(channel_address)
     {
         Ok(Some(entry)) => entry.value().to_owned(),
         Ok(None) =>{}.into(),
