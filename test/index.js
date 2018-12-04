@@ -68,13 +68,14 @@ test('scenario test create & publish post -> get from other instance', (t) => {
     t.comment(get_result + "")
 
     if (get_result) {
-      t.deepEqual(get_result, testNewChannelParams)
+      t.deepEqual(get_result, testNewChannelParams);
+      t.end()
     }
     else if (i < 50) {
       setTimeout(function() {
         check_get_result(
           ++i,
-          app2.call("chat", "main", "get_my_channels", {})
+          app2.call("chat", "main", "get_my_channels", {channel_address:create_result.address})
         )
       }, 500)
     }
