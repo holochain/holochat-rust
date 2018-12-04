@@ -75,7 +75,7 @@ test('scenario test create & publish post -> get from other instance', (t) => {
       setTimeout(function() {
         check_get_result(
           ++i,
-          app2.call("chat", "main", "get_my_channels", {channel_address:create_result.address})
+          app2.call("chat", "main", "get_my_channel", {channel_address:create_result.address})
         )
       }, 500)
     }
