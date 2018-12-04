@@ -41,6 +41,11 @@ define_zome! {
 				outputs: |result: JsonString|,
 				handler: channel::handle_get_my_channels
 			}
+			get_my_channels{
+				input : |hash_address:HashString|,
+				output :|result:JsonString|,
+				handler : channel::handle_get_my_channel
+			}
             post_message: {
 				inputs: |channel_name: String, message: message::Message|,
 				outputs: |result: JsonString|,

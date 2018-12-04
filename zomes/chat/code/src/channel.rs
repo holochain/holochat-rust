@@ -127,6 +127,16 @@ pub fn handle_get_my_channels() -> JsonString {
     }
 }
 
+pub fn handle_get_my_channel(address : HashString) -> JsonString
+{
+    match hdk::get_entry(address)
+    {
+        Ok(Some(entry)) => entry.value().to_owned(),
+        Ok(None) =>{}.into(),
+        Err(err) =>err.into()
+    }
+}
+
 
 
 
