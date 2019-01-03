@@ -7,13 +7,12 @@ use hdk::{
     error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::cas::content::Address,
     holochain_core_types::dna::entry_types::Sharing,
-    holochain_core_types::entry::{entry_type::EntryType, Entry},
+    holochain_core_types::entry::Entry,
     holochain_core_types::error::HolochainError,
     holochain_core_types::json::JsonString,
     holochain_core_types::hash::HashString,
     AGENT_ADDRESS,
 };
-use std::convert::TryFrom;
 
 use super::message;
 use crate::utils::{GetLinksLoadResult,get_links_and_load_type};
