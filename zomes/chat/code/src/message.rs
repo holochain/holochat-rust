@@ -1,10 +1,10 @@
-use hdk::holochain_core_types::cas::content::Address;
-use hdk::holochain_core_types::error::HolochainError;
-use hdk::holochain_core_types::json::JsonString;
+use hdk::holochain_core_types::{dna::entry_types::Sharing,
+cas::content::Address,
+error::HolochainError,
+json::JsonString};
 use hdk::{
     self, 
-    entry_definition::ValidatingEntryType,
-    holochain_core_types::dna::zome::entry_types::Sharing,
+    entry_definition::ValidatingEntryType
 };
 
 

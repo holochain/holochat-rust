@@ -6,7 +6,7 @@ use hdk::{
     },
     error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::cas::content::Address,
-    holochain_core_types::dna::zome::entry_types::Sharing,
+    holochain_core_types::dna::entry_types::Sharing,
     holochain_core_types::entry::{entry_type::EntryType, Entry},
     holochain_core_types::error::HolochainError,
     holochain_core_types::json::JsonString,
@@ -16,7 +16,7 @@ use hdk::{
 use std::convert::TryFrom;
 
 use super::message;
-use super::utils;
+use crate::utils::{GetLinksLoadResult,get_links_and_load_type};
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 pub struct Channel {
@@ -24,6 +24,7 @@ pub struct Channel {
     pub description: String,
     pub public: bool,
 }
+
 
 pub fn public_channel_definition() -> ValidatingEntryType {
     entry!(
@@ -108,8 +109,8 @@ pub fn handle_create_channel(
     };
 
     let entry = match public {
-        true => Entry::new(EntryType::App("public_channel".into()), channel),
-        false => Entry::new(EntryType::App("direct_channel".into()), channel),
+        true => Entry::App("public_channel".into(), channel.into()),
+        false => Entry::App("direct_channel".into(), channel.into()),
     };
 
     match hdk::commit_entry(&entry) {
@@ -132,7 +133,7 @@ pub fn handle_get_my_channel(channel_address : HashString) -> JsonString
 {
     match hdk::get_entry(channel_address)
     {
-        Ok(Some(entry)) => entry.value().to_owned(),
+        Ok(Some(entry)) => entry.into(),
         Ok(None) =>{}.into(),
         Err(err) =>err.into()
     }
@@ -153,14 +154,15 @@ pub fn handle_post_message(channel_name: String, message: message::Message) -> J
         .map(|s| hdk::entry_address(&s))
         .map(|channel_addr| {
             channel_addr.and_then(|addr| {
-                hdk::commit_entry(&Entry::new(EntryType::App("message".into()), message))
+                hdk::commit_entry(&Entry::App("message".into(), message.into()))
                     .and_then(|message_addr| hdk::link_entries(&addr, &message_addr, "message_in"))
-                    .map(|_| json!({"success": true}))
+                    .map(|_| JsonString::from("success"))
             })
         })
-        .map(|s| s.map_err(|err| json!({"err": err.to_string()}).into()))
-        .unwrap_or_else(|| Err(json!({"success": false})))
-        .into()
+        .map(|s| s.map_err(|err| JsonString::from(err.to_string())))
+        .unwrap_or_else(|| Ok(JsonString::from("err")))
+        .unwrap_or_else(|_|JsonString::from("err"))
+        
 }
 
 fn from_channel(channel_name: String) -> Option<Entry> {
@@ -169,8 +171,8 @@ fn from_channel(channel_name: String) -> Option<Entry> {
             .iter()
             .filter(|f| f.name == channel_name)
             .map(|channel| match channel.public {
-                true => Entry::new(EntryType::App("public_channel".into()), channel),
-                false => Entry::new(EntryType::App("direct_channel".into()), channel),
+                true => Entry::App("public_channel".into(), channel.into()),
+                false => Entry::App("direct_channel".into(), channel.into()),
             })
             .next()
     })
@@ -179,33 +181,25 @@ fn from_channel(channel_name: String) -> Option<Entry> {
 // end public zome functions
 
 fn get_my_channels() -> ZomeApiResult<Vec<Channel>> {
-    utils::get_links_and_load(&AGENT_ADDRESS, "rooms").map(|results| {
-        results
-            .iter()
-            .map(|get_links_result| {
-                Channel::try_from(get_links_result.entry.value().clone()).unwrap()
-            })
-            .collect()
-    })
+    let room_links : GetLinksLoadResult<Channel> = get_links_and_load_type(&AGENT_ADDRESS, "rooms")?;
+    let rooms = room_links.iter().map(|link|{
+        link.entry.clone()
+    }).collect::<Vec<_>>();
+    Ok(rooms)
 }
 
 
 fn get_messages(channel_name: String) -> ZomeApiResult<Vec<message::Message>> {
-    match from_channel(channel_name.clone()) {
-        Some(entry) => match hdk::entry_address(&entry) {
-            Ok(address) => utils::get_links_and_load(&address, "message_in").map(|results| {
-                results
-                    .iter()
-                    .map(|get_links_result| {
-                        message::Message::try_from(get_links_result.entry.value().clone()).unwrap()
-                    })
-                    .collect()
-            }),
-            Err(hdk_err) => Err(hdk_err),
-        },
-        None => Err(ZomeApiError::from(format!(
+    
+    let channel = from_channel(channel_name.clone()).ok_or(ZomeApiError::from(format!(
             "Channel {} doesn't exist",
             channel_name
-        ))),
-    }
+        )))?;
+    let address = hdk::entry_address(&channel)?;
+    let get_links_result  : GetLinksLoadResult<message::Message> = get_links_and_load_type(&address, "message_in")?;
+    let messages = get_links_result.iter().map(|links|{
+        links.entry.clone()
+    }).collect::<Vec<_>>();
+    Ok(messages)
+    
 }

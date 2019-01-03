@@ -10,7 +10,7 @@ extern crate serde_json;
 extern crate holochain_core_types_derive;
 extern crate machine_ip;
 
-use hdk::holochain_core_types::hash::HashString;
+use hdk::holochain_core_types::{hash::HashString,json::JsonString};
 mod message;
 mod channel;
 mod utils;
