@@ -56,7 +56,7 @@ id = "test-instance1"
 id = "websocket_interface2"
 [interfaces.driver]
 type = "websocket"
-port = 8889
+port = 3401
 [[interfaces.instances]]
 id = "test-instance2"
 

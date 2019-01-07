@@ -1,5 +1,3 @@
-
-
 var activeRoom;
 var active_room_name;
 var call_to_api;
@@ -9,7 +7,7 @@ function getConfiguration()
   var configuration ={
     url :'ws://localhost:3400/',
     agent:'chat',
-    instance : "test-instance",
+    instance : "test-instance1",
     dna :"Qm328wyq38924y"
   }
 
@@ -38,10 +36,10 @@ function getConfiguration()
           "</li>"
         )
       }
-     
+
         setActiveRoom()
-      
-    }); 
+
+    });
  }
 
  function addRoom() {
@@ -52,7 +50,7 @@ function getConfiguration()
    }
 
    $("#room-name-input").val('')
-  
+
    call_to_api(configuration.instance, "chat", "main", "create_channel")({
       name: room.name,
       description: "user generated room",
@@ -93,7 +91,7 @@ function getMessages() {
       var sorted_messages = messages.sort(function(a,b){
         return new Date(b.timestamp) - new Date(a.timestamp);
       });
-      
+
       $("#messages").empty()
       for(var i=0;i<sorted_messages.length;i++) {
         console.log("what is the text:" +sorted_messages[i].text );
@@ -113,15 +111,15 @@ function getMessages() {
       channel_name: active_room_name || ""
     })
     .then(response =>{
-      console.log("response : +" + response) 
+      console.log("response : +" + response)
     })
 }
 
 
  $(window).ready(function() {
    var configuration = getConfiguration();
-   holoclient.connect(configuration.url).then(({call, close}) => 
-   { 
+   holoclient.connect(configuration.url).then(({call, close}) =>
+   {
         call_to_api = call;
    })
 
@@ -141,5 +139,3 @@ function getMessages() {
       getRooms();
     },3000)
  });
-
-

@@ -4204,9 +4204,9 @@ function isSpreadKey (key) {
 }
 
 },{}],"AhOk":[function(require,module,exports) {
-/** 
+/**
  * @module 101/is-integer
- */ 
+ */
 
 /**
  * Returns true if n is an integer.
@@ -4385,7 +4385,7 @@ function startsWithVowel (str) {
 
 			lastTwo = arrayOfStrings
 				.slice(arrayOfStrings.length - 2)
-				.join(combinedEndWith);				
+				.join(combinedEndWith);
 
 			if (!upToLastTwo.length) {
 				return lastTwo;
@@ -7543,4 +7543,4 @@ win.holoclient = win.holoclient || {
   connect: connect
 };
 },{"rpc-websockets":"HMNW"}]},{},["Focm"], null)
-//# sourceMappingURL=/holoclient.map
+//# sourceMappingURL=holoclient.map
