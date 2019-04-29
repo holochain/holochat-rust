@@ -1,6 +1,6 @@
 # holochat-rust
 
-THIS REPOSITORY HAS NOT YET BEEN UPDATED FOR HOLOCHAIN 0.0.4-alpha, BUT WILL BE SHORTLY
+## Deprecated: This repo is deprecated in favor of [holochain-basic-chat](https://github.com/holochain/holochain-basic-chat)
 
 [![Project](https://img.shields.io/badge/project-holochain-blue.svg?style=flat-square)](http://holochain.org/)
 [![Chat](https://img.shields.io/badge/chat-chat%2eholochain%2enet-blue.svg?style=flat-square)](https://chat.holochain.org)
